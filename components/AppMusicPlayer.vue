@@ -141,11 +141,14 @@ export default {
     play() {
       this.isPlaying = !this.isPlaying
       this.$nextTick(() => {
+        console.log('is playing', this.isPlaying)
+
         if (this.isPlaying) {
-          this.aniamtePlay()
+          // this.aniamtePlay()
+          if (this.player) this.aniamtePlay()
           this.player?.play()
           if (!this.player) {
-            this.playYtMusic()
+            this.playYtMusic(this.currentPlaying)
           }
         } else {
           this.animatePause()
