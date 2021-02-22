@@ -1,0 +1,17 @@
+/* purgecss start ignore */
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+/* purgecss end ignore */
+@import 'tailwindcss/utilities';
+
+@layer base {
+  input {
+    @apply p-3 border;
+  }
+  button {
+    @apply px-4 py-2 bg-gray-800 text-white;
+  }
+  img {
+    @apply w-full h-full object-cover object-center;
+  }
+}

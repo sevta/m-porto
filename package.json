@@ -1,0 +1,37 @@
+{
+  "name": "portofolio",
+  "version": "1.0.0",
+  "description": "My divine Nuxt.js project",
+  "author": "sevta",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate"
+  },
+  "dependencies": {
+    "@nuxt/content": "^1.13.1",
+    "@nuxtjs/axios": "^5.3.6",
+    "@nuxtjs/dotenv": "^1.4.0",
+    "@nuxtjs/pwa": "^3.0.0-0",
+    "@tailwindcss/typography": "^0.4.0",
+    "express": "^4.17.1",
+    "granim": "^2.0.0",
+    "gsap": "^3.6.0",
+    "nuxt": "^2.0.0",
+    "yt-player": "^3.5.0",
+    "ytsr": "^3.3.1"
+  },
+  "devDependencies": {
+    "@nuxtjs/google-fonts": "^1.2.0",
+    "@nuxtjs/tailwindcss": "^3.4.2",
+    "@tailwindcss/postcss7-compat": "^2.0.3",
+    "autoprefixer": "^9.8.6",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "postcss": "^7.0.35",
+    "prettier": "^1.19.1",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.3"
+  }
+}
