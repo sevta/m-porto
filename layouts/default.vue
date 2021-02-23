@@ -27,6 +27,13 @@ export default {
       granimInstance: null
     }
   },
+  created() {
+    let playlists = localStorage.getItem('playlists')
+    if (playlists) {
+      this.$store.commit('INIT_DATA', JSON.parse(playlists))
+      console.log('parse', JSON.parse(playlists))
+    }
+  },
   mounted() {
     this.setupGranim()
   },

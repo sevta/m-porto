@@ -25,6 +25,21 @@ app.get('/music/yt/search', async (req, res) => {
   }
 })
 
+app.post('/content/save', async (req, res) => {
+  console.log(req.body)
+  fs.writeFile(
+    './content/home.json',
+    JSON.stringify(req.body),
+    'utf8',
+    function(err, data) {
+      console.log('creating file home.json...')
+      if (err) console.log(err)
+      console.log(data)
+      res.send({ msg: 'success' })
+    }
+  )
+})
+
 app.post('/music/save', (req, res) => {
   const { id, title, url, thumbnail, duration } = req.body
   let music = JSON.stringify({

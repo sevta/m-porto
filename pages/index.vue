@@ -3,12 +3,10 @@
     <div class="divide-y-2 divide-gray-300 divide-opacity-30">
       <div class="pt-16 pb-10 prose max-w-4xl w-full">
         <div class="text-4xl  tracking-tighter dark:text-white">
-          Hey, I’m Se
+          {{ content.headingName }}
         </div>
         <div class="text-gray-500 mt-4 dark:text-gray-200">
-          I’m a developer, writer, and creator. I work at ▲Vercel as a Solutions
-          Architect. You’ve found my personal slice of the internet – sign my
-          guestbook while you're.
+          {{ content.headingContent }}
         </div>
         <div class="flex items-center mt-5 space-x-4">
           <div class="cursor-pointer">
@@ -99,14 +97,24 @@
 
 <script>
 export default {
-  mounted() {
-    console.log('music data', this.musicData)
-  },
-  async asyncData({ $content }) {
-    const musicData = await $content('music').fetch()
-
+  data() {
     return {
-      musicData
+      content: {
+        headingName: '',
+        headingContent: ''
+      }
+    }
+  },
+  mounted() {
+    this.getContent()
+  },
+
+  methods: {
+    async getContent() {
+      const homeContent = await this.$content('home').fetch()
+      this.content.headingName = homeContent.headingName
+      this.content.headingContent = homeContent.headingContent
+      console.log(this.content)
     }
   }
 }

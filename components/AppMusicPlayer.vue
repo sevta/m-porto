@@ -2,9 +2,9 @@
   <div class="fixed bottom-0 left-0 w-full flex py-5 z-20 px-10">
     <div ref="ytPlayer" class="absolute -left-full"></div>
     <div
-      class="musicPanel w-auto px-5 py-5 relative rounded-3xl shadow-xl flex flex-col justify-center"
+      class="musicPanel w-auto  py-5 relative rounded-xl shadow-xl flex flex-col justify-center"
     >
-      <div class="flex items-center">
+      <div class="flex items-center px-5">
         <div
           class="relative w-28 cursor-pointer hover:scale-110 transform transition-all duration-200"
           @click="doToggleMusicLists"
@@ -16,7 +16,7 @@
             <div class="w-5 h-5 rounded-full z-10 bg-black "></div>
             <img
               class="w-full h-full object-cover object-center z-0"
-              :src="currentPlaying.thumbnail"
+              :src="currentPlaying.thumbnails[0].url"
               alt=""
             />
           </div>
@@ -24,11 +24,11 @@
         <div class="relative flex flex-col w-52">
           <div class="mb-1 dark:text-white truncate text-sm">
             <a :href="currentPlaying.url" target="_blank">
-              {{ currentPlaying.title }}
+              {{ currentPlaying.author.name }}
             </a>
           </div>
           <div class="text-gray-500 text-xs">
-            title song
+            {{ currentPlaying.title }}
           </div>
         </div>
         <div class="relative flex items-center justify-center ml-2 space-x-2">
@@ -87,23 +87,47 @@
         </div>
       </div>
       <transition name="fade">
-        <div class="flex divide-y-2 flex-col pt-5" v-if="toggleMusicLists">
-          <div
-            class="flex items-center cursor-pointer py-2 hover:mr-2 transition"
-            v-for="item in music"
-            :key="item"
-            @click="playYtMusic(item)"
-          >
-            <div class="w-8 hidden h-8 mr-2 rounded overflow-hidden">
-              <img :src="item.thumbnail" alt="" />
+        <div
+          class="flex divide-y-2 flex-col pt-5 h-60 overflow-y-scroll pl-5 pb-10"
+          v-if="toggleMusicLists"
+        >
+          <div v-if="tab == 'playlists'" class="divide-y-2">
+            <div v-if="playlists.length > 0">
+              <div
+                class="flex pr-5 relative justify-between truncate cursor-pointer py-2 hover:mr-2 transition"
+                v-for="(item, key) in playlists"
+                :key="key"
+              >
+                <!-- <div class="w-8 hidden h-8 mr-2 rounded overflow-hidden">
+                <img :src="item.thumbnail" alt="" />
+              </div> -->
+                <div class="flex items-center" @click="playYtMusic(item)">
+                  <div class="text-sm mr-2 font-semibold">
+                    {{ item.duration }}
+                  </div>
+                  <div class="text-sm text-gray-500 mr-2">
+                    {{ item.title }}
+                  </div>
+                </div>
+                <div class="flex items-center">
+                  <div
+                    class="cursor-pointer z-10"
+                    @click="removeFromPlaylist(item)"
+                  >
+                    -
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="text-sm mr-2 font-semibold">
-              {{ item.duration }}
-            </div>
-            <div class="text-xs text-gray-500">
-              {{ item.title }}
+            <div v-else>
+              <div class="text-center mt-2">
+                you dont have playlists :)
+              </div>
             </div>
           </div>
+          <AppMusicDiscover v-if="tab == 'discover'" />
+
+          <AppMusicTab @currentTab="currentTab" />
         </div>
       </transition>
     </div>
@@ -119,32 +143,89 @@ export default {
     return {
       isPlaying: false,
       tl: null,
-      toggleMusicLists: false,
+      toggleMusicLists: true,
       music: [],
       player: null,
-      currentPlaying: {}
+      currentPlaying: {
+        title: '-',
+        author: {
+          name: '-'
+        },
+        thumbnails: [
+          {
+            url:
+              'https://www.designformusic.com/wp-content/uploads/2018/11/trailer-tension-album-cover-3d-design-1000x1000.jpg'
+          }
+        ]
+      },
+      tab: 'playlists'
     }
   },
 
-  mounted() {
-    console.log(this.musicData)
-    this.$content('music')
-      .sortBy('updatedAt', 'desc')
-      .fetch()
-      .then(data => {
-        this.music = data
-        this.currentPlaying = data[0]
-      })
+  computed: {
+    thumbnails() {},
+    playlists() {
+      return this.$store.state.playlists
+    }
+  },
+
+  watch: {
+    playlists(value) {
+      console.log('playlists', value)
+      if (value.length == 0) {
+      }
+    },
+
+    mounted() {
+      if (this.playlists.length == 0) {
+        this.currentPlaying = {
+          title: '-',
+          author: {
+            name: '-'
+          },
+          thumbnails: [
+            {
+              url:
+                'https://www.designformusic.com/wp-content/uploads/2018/11/trailer-tension-album-cover-3d-design-1000x1000.jpg'
+            }
+          ]
+        }
+      } else {
+        this.currentPlaying = value[0]
+      }
+    }
   },
 
   methods: {
+    currentTab(data) {
+      this.tab = data
+    },
+    loadData() {
+      const playlists = this.$store.state.playlists
+      this.music = playlists
+      console.log('playlists', playlists)
+      if (playlists.length == 0) {
+        this.currentPlaying = {
+          title: '-',
+          thumbnails: [
+            {
+              url:
+                'https://www.designformusic.com/wp-content/uploads/2018/11/trailer-tension-album-cover-3d-design-1000x1000.jpg'
+            }
+          ]
+        }
+      } else {
+        this.currentPlaying = playlists[0]
+      }
+      console.log('playlists iin app', playlists)
+    },
     play() {
+      if (this.playlists.length == 0) return
       this.isPlaying = !this.isPlaying
       this.$nextTick(() => {
         console.log('is playing', this.isPlaying)
 
         if (this.isPlaying) {
-          // this.aniamtePlay()
           if (this.player) this.aniamtePlay()
           this.player?.play()
           if (!this.player) {
@@ -180,6 +261,17 @@ export default {
     },
     doToggleMusicLists() {
       this.toggleMusicLists = !this.toggleMusicLists
+    },
+    removeFromPlaylist(item) {
+      console.log('remove', item)
+      this.$store.dispatch('removeFromPlaylist', item).then(() => {
+        if (this.playlists.length > 0) {
+          this.playYtMusic(this.playlists[0])
+        } else {
+          this.animatePause()
+          this.player?.pause()
+        }
+      })
     },
     playMedia() {}
   }

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col p-5">
+  <div class="flex flex-col">
     <div class="text-5xl font-medium tracking-tighter">
       Music
     </div>
@@ -65,7 +65,8 @@ export default {
       loading: false,
       loadingAddMusic: false,
       result: [],
-      saveMusicId: ''
+      saveMusicId: '',
+      myMusic: []
     }
   },
 
@@ -77,8 +78,9 @@ export default {
     }
   },
 
-  mounted() {
-    console.log('music', this.music)
+  async mounted() {
+    const myMusic = await this.$content('music').fetch()
+    this.myMusic = myMusic
   },
 
   methods: {
